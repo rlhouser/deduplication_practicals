@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
-#include "../cacheutils.h"
+#include "cacheutils.h"
 
 #define  infile "infile.txt"
 #define  num_seconds 240

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
-#include "../cacheutils.h"
+#include "cacheutils.h"
 
 #define  infile "infile.txt"
 #define  num_seconds 600
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
  	buff[i] = '0';
   }
   FILE *fp = fopen(filename, "r");
-  fgets(buff, MESSAGE_LEN, fp);
+  char *tmp = fgets(buff, MESSAGE_LEN, fp);
   fclose(fp);
   char encoded[MESSAGE_LEN*8];
   for(size_t i = 0; i < MESSAGE_LEN; i++){
