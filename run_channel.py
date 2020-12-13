@@ -1,6 +1,16 @@
+import math
 import os
-import numpy as np
 import sys
+
+def median(x):
+        s = sorted(x)
+        l = len(x)
+        i = math.floor(l/2)
+        if l == 1:
+                return s[0]
+        if l%2 == 0:
+                return (s[i] + s[i+1])/2
+        return s[i]
 
 def read_received():
 	calibration_file = 'calibration.csv'
@@ -12,7 +22,7 @@ def read_received():
 		print("Missing receiver timing file")
 	no_CoW = [int(x.strip()) for x in open(calibration_file).readlines()][4:]
 	CoW = [int(x.strip()) for x in open(receiver_file).readlines()]
-	nc_median = np.median(no_CoW)
+	nc_median = median(no_CoW)
 	nc_maximum = max(no_CoW)
 	nc_min = min(no_CoW)
 	print('Calibration Timing:\n min: %i\tmedian: %i\tmax: %i' % (nc_min, nc_median, nc_maximum))
@@ -24,7 +34,7 @@ def read_received():
 	for i in range(l-1,0, -1):
 		start = i*8
 		end = (i + 1)*8
-		c_median = np.median(CoW[start:end])
+		c_median = median(CoW[start:end])
 		c_min = min(CoW[start:end])
 		if (nc_median*2 > c_median):
 			#print('Location %i written: ' % (l - i - 1))
@@ -68,6 +78,6 @@ if __name__ == '__main__':
 	pagesize = 4096
 	seed = 100
 	offset = get_offset(options[option]['infile'])
-	#os.system('./%s %i %i %s' % (options[option]['infile'], offset/4, seed, options[option]['options']))
+	os.system('./%s %i %i %s' % (options[option]['infile'], offset/4, seed, options[option]['options']))
 	if option == 'r':
 		read_received()

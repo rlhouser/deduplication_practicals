@@ -1,7 +1,16 @@
-import os
-import numpy as np
+import math
 import os
 import sys
+
+def median(x):
+	s = sorted(x)
+	l = len(x)
+	i = math.floor(l/2)
+	if l == 1:
+		return s[0]
+	if l%2 == 0:
+		return (s[i] + s[i+1])/2
+	return s[i]
 
 def get_offset(infile, bufname, tmpfile):
 	if not os.path.isfile(infile):
@@ -35,12 +44,13 @@ def check_timings():
 		exit(0)
 	if not os.path.isfile(virtualization_file):
 		print("Missing virtualization check timing file. Please run check: ./check_virtualization")
+		exit(0)
 	no_CoW = [int(x.strip()) for x in open(calibration_file).readlines()][1:-1]
 	CoW = [int(x.strip()) for x in open(virtualization_file).readlines()][1:-1]
-	nc_median = np.median(no_CoW)
+	nc_median = median(no_CoW)
 	nc_maximum = max(no_CoW)
 	nc_min = min(no_CoW)
-	c_median = np.median(CoW)
+	c_median = median(CoW)
 	c_maximum = max(CoW)
 	c_min = min(CoW)
 	print('No COW:\n min: %i\tmedian: %i\tmax: %i' % (nc_min, nc_median, nc_maximum))
