@@ -12,6 +12,7 @@ def median(x):
 		return (s[i] + s[i+1])/2
 	return s[i]
 
+
 def get_offset(infile, bufname, tmpfile):
 	if not os.path.isfile(infile):
 		print("Missing %s" % (infile))
@@ -70,7 +71,7 @@ if __name__ == '__main__':
 	offsets = get_offset(to_run, bufname, tmpfile)
 	if offsets is None:
 		exit(0)
-	#os.system('./%s %i %i %i' % (to_run, offsets[0]/4, offsets[1]/4, seed))
+	os.system('./%s %i %i %i' % (to_run, offsets[0]/4, offsets[1]/4, seed))
 	check_timings()
 
 

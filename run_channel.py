@@ -12,6 +12,13 @@ def median(x):
                 return (s[i] + s[i+1])/2
         return s[i]
 
+def filter_x(x, thresh = 3):
+        to_return = []
+        for n in x:
+                if math.floor(math.log(n, 10)) > thresh:
+                        to_return.append(n)
+        return to_return
+
 def read_received():
 	calibration_file = 'calibration.csv'
 	receiver_file = 'received.csv'
@@ -20,8 +27,9 @@ def read_received():
 		exit(0)
 	if not os.path.isfile(receiver_file):
 		print("Missing receiver timing file")
-	no_CoW = [int(x.strip()) for x in open(calibration_file).readlines()][4:]
+	no_CoW = [int(x.strip()) for x in open(calibration_file).readlines()][8:]
 	CoW = [int(x.strip()) for x in open(receiver_file).readlines()]
+	no_CoW = filter_x(no_CoW, thresh = 3)
 	nc_median = median(no_CoW)
 	nc_maximum = max(no_CoW)
 	nc_min = min(no_CoW)
@@ -36,7 +44,7 @@ def read_received():
 		end = (i + 1)*8
 		c_median = median(CoW[start:end])
 		c_min = min(CoW[start:end])
-		if (nc_median*2 > c_median):
+		if (c_median < nc_median):
 			#print('Location %i written: ' % (l - i - 1))
 			#print('Timing:\n min: %i\tmedian: %i' % (c_min, c_median))
 			bit = 1	
@@ -48,8 +56,7 @@ def read_received():
 			c = 0
 		counter += 1
 	print(s)
-
-def get_offset(infile):
+def get_offset(infile, tmpfile, bufname):
 	if not os.path.isfile(infile):
 		print("Missing %s" % (infile))
 		exit(0)
@@ -62,7 +69,7 @@ def get_offset(infile):
 				map_loc = int(l[0], 16)
 	offset = pagesize - map_loc%pagesize
 	start = map_loc + offset
-	print("Map location: %i\tOffset: %i\tStarting Address %i\tPage Offest (should be 0): %i" % (map_loc, offset, start, start%pagesize))
+	print("Map location: %i\tOffset: %i\tStarting Address %i\tPage Offset (should be 0): %i" % (map_loc, offset, start, start%pagesize))
 	os.system('rm %s' % (tmpfile))
 	return offset
 
@@ -77,7 +84,7 @@ if __name__ == '__main__':
 	bufname = 'map'
 	pagesize = 4096
 	seed = 100
-	offset = get_offset(options[option]['infile'])
+	offset = get_offset(options[option]['infile'], tmpfile, bufname)
 	os.system('./%s %i %i %s' % (options[option]['infile'], offset/4, seed, options[option]['options']))
 	if option == 'r':
 		read_received()

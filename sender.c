@@ -8,7 +8,7 @@
 #include "cacheutils.h"
 
 #define  infile "infile.txt"
-#define  num_seconds 600
+#define  num_seconds 360
 
 #define ROWS 1024
 #define COLUMNS 1024
